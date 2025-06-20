@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - Costy</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="nav container">
+      <i class='bx bx-menu' id="menu-icon"></i>
+      <a href="index.html" class="logo">Costy</a>
+      <div class="navbar">
+        <a href="#" class="nav-link">Woman</a>
+        <a href="#" class="nav-link">Man</a>
+        <a href="#" class="nav-link">Kids</a>
+        <a href="#" class="nav-link">Accessories</a>
+      </div>
+      <a href="cart.html">
+        <i class='bx bx-shopping-bag' id="cart-icon" data-quantity="0"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Checkout Section -->
+  <section class="checkout container">
+    <h2 class="heading">Checkout</h2>
+
+    <div class="checkout-wrapper">
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+        <div id="checkoutItems"></div>
+        <h3 id="checkoutTotal">Total: $0.00</h3>
+      </div>
+
+      <!-- Customer Details -->
+      <div class="checkout-form">
+        <h3>Billing Details</h3>
+        <form id="checkoutForm">
+          <input type="text" name="name" placeholder="Full Name" required>
+          <input type="email" name="email" placeholder="Email Address" required>
+          <input type="text" name="address" placeholder="Shipping Address" required>
+          <select name="payment" required>
+            <option value="">Select Payment Method</option>
+            <option value="cod">Cash on Delivery</option>
+            <option value="card">Credit/Debit Card</option>
+            <option value="upi">UPI</option>
+          </select>
+          <button type="submit" class="place-order-btn">Place Order</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const checkoutItems = document.getElementById("checkoutItems");
+      const checkoutTotal = document.getElementById("checkoutTotal");
+      const form = document.getElementById("checkoutForm");
+
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      if (cart.length === 0) {
+        checkoutItems.innerHTML = "<p>Your cart is empty.</p>";
+        checkoutTotal.textContent = "Total: $0.00";
+      } else {
+        let total = 0;
+        checkoutItems.innerHTML = cart.map(item => {
+          const itemTotal = item.price * item.quantity;
+          total += itemTotal;
+          return `
+            <div class="checkout-item">
+              <p><strong>${item.title}</strong> x ${item.quantity}</p>
+              <p>$${itemTotal.toFixed(2)}</p>
+            </div>
+          `;
+        }).join("");
+        checkoutTotal.textContent = `Total: $${total.toFixed(2)}`;
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        localStorage.removeItem("cart");
+        window.location.href = "thankyou.html";
+      });
+    });
+  </script>
+</body>
+</html>
